@@ -1,0 +1,14 @@
+[DEFAULT]
+repository: /repository/path/or/url
+temp_dir: /local/directory/where/to/clone/before/deploy
+exclude: .git, .gitignore
+
+[production]
+server: 127.0.0.1, 127.0.0.2
+user: username
+branch: master
+project_dir: /server/project/directory/where/files/reside
+before_deploy: 
+    composer install --no-dev --no-interaction --optimize-autoloader
+    phpunit
+    etc.
