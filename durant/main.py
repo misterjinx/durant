@@ -1,20 +1,15 @@
-"""Durant. Simple git deployment tool.
-
-Usage:
-durant.py [OPTIONS] deploy <stage>
-
-Options:
--n, --dry-run   Perform a trial run, without actually deploying
--v, --version   Show version number
--h, --help      Show this screen
-"""
-
-
 import sys
-from durant.deployer import Deployer
+import durant
+
+from durant.cli import output
+from durant.cli import output_dots
+from durant.colors import colors
 
 def usage():
-    print __doc__
+    print durant.__doc__
+
+def version():
+    print 'Version %s' % durant.__version__
 
 def main():
     try:
@@ -28,7 +23,7 @@ def main():
             usage()
             sys.exit(1)
         elif '-v' in args or '--version' in args:
-            print 'Version %s' % VERSION
+            version()
             sys.exit(1)             
         elif 'deploy' in args:
             dry_run = True if '-n' in args or '--dry-run' in args else False
@@ -39,24 +34,24 @@ def main():
                 usage()
                 sys.exit(1)
             else:
-                d = Deployer()
+                d = durant.Deployer()
                
                 try:
-                    print 'Checking environment...',
+                    print output_dots('Checking environment', end="DONE"),
 
                     d.check_environment()
 
-                    print 'DONE'
+                    print output('DONE', colors.GREEN)
 
-                    print 'Checking config file...',
+                    print output_dots('Checking config file', end="DONE"),
 
                     d.check_config()
 
-                    print 'DONE'
+                    print output('DONE', colors.GREEN)
 
                     d.deploy(stage, dry_run)
                 except Exception, e:
-                    print '\nERR: ' + str(e)
+                    print output('ERR: ', colors.RED) + str(e)
                     sys.exit(1)
         else:
             usage()
