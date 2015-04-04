@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import sys
 import durant
 
@@ -6,10 +8,10 @@ from durant.cli import output_dots
 from durant.colors import colors
 
 def usage():
-    print durant.__doc__
+    print(durant.__doc__)
 
 def version():
-    print 'Version %s' % durant.__version__
+    print('Version %s' % durant.__version__)
 
 def main():
     try:
@@ -37,21 +39,21 @@ def main():
                 d = durant.Deployer()
                
                 try:
-                    print output_dots('Checking environment', end="DONE"),
+                    print(output_dots('Checking environment', end="DONE"), end='')
 
                     d.check_environment()
 
-                    print output('DONE', colors.GREEN)
+                    print(output('DONE', colors.GREEN), end='')
 
-                    print output_dots('Checking config file', end="DONE"),
+                    print(output_dots('Checking config file', end="DONE"), end='')
 
                     d.check_config()
 
-                    print output('DONE', colors.GREEN)
+                    print(output('DONE', colors.GREEN))
 
                     d.deploy(stage, dry_run)
                 except Exception, e:
-                    print output('ERR: ', colors.RED) + str(e)
+                    print(output('ERR: ', colors.RED) + str(e))
                     sys.exit(1)
         else:
             usage()
