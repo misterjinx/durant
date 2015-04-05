@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import sys
+import time
 import durant
 
 from durant.cli import output
@@ -36,24 +37,23 @@ def main():
                 usage()
                 sys.exit(1)
             else:
+                start = time.time()
+
                 d = durant.Deployer()
-               
+                
                 try:
-                    print(output_dots('Checking environment', end="DONE"), end='')
-
-                    d.check_environment()
-
-                    print(output('DONE', colors.GREEN), end='')
-
-                    print(output_dots('Checking config file', end="DONE"), end='')
-
-                    d.check_config()
-
-                    print(output('DONE', colors.GREEN))
+                    print(output('Starting deployment\n', color=colors.YELLOW))
 
                     d.deploy(stage, dry_run)
-                except Exception, e:
-                    print(output('ERR: ', colors.RED) + str(e))
+                    
+                    end = time.time()
+                    
+                    print(output('\nDeployment complete (%.3f seconds)' % (end - start), color=colors.YELLOW)) 
+                except Exception as e:
+                    end = time.time()
+
+                    print(output('ERROR: ', colors.RED) + str(e))
+                    print(output('\nDeployment failed (%.3f seconds)' % (end - start), color=colors.YELLOW)) 
                     sys.exit(1)
         else:
             usage()

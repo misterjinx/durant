@@ -1,8 +1,13 @@
+from __future__ import print_function
+
 import os
 import sys
-import time
 import subprocess
 from ConfigParser import SafeConfigParser
+
+from cli import output
+from cli import output_dots
+from colors import colors
 
 from exceptions import DependencyError
 from exceptions import ConfigError
@@ -49,19 +54,28 @@ class Deployer(object):
         return True
 
     def deploy(self, stage, dry_run=False):
+        self.print('Checking environment...', end='')
+        self.check_environment()        
+        self.print_done()
+
+        self.print('Checking config file...', end='')
+        self.check_config()
+        self.print_done()
+
+        self.print('Preparing for deploy...', end='')
+        
         if not self.config.has_section(stage):
+            self.print_fail()
             raise ConfigError(
                 'Config section for "%s" stage not found' % stage
             )
         
-        start = time.time()
+        self.print_done()
+
+        self.print('Cloning repository on local machine...')
 
         servers = self.get_config_value(stage, 'server')
         before_deploy = self.get_config_value(stage, 'before_deploy')
-        
-        print 'Preparing for deploy...'
-        
-        print 'Cloning repository on local machine...'
 
         temp_dir = self.config.get(stage, 'temp_dir')
         repository = self.config.get(stage, 'repository')
@@ -77,18 +91,19 @@ class Deployer(object):
                 os.chdir(temp_dir)
                 remote_origin_url = subprocess.check_output(
                     [self.binaries['git'], 'config', '--get', 'remote.origin.url']
-                ).strip() == repository
+                ).strip()
                 if remote_origin_url == repository:
                     already_cloned = True
-                    print 'Repository already cloned, updating instead...'    
+                    self.print('Repository already cloned, updating instead...')    
                 else:    
+                    self.print_fail()
                     raise DeployError(
-                        'Temp directory is not empty and the existing repository differs from the target repository'
+                        'Temp directory is not empty and the existing repository '\
+                        'differs from the target repository'
                     )            
             else:
-                raise DeployError(
-                    'Temp directory is not empty, cannot clone'
-                )                
+                self.print_fail()
+                raise DeployError('Temp directory is not empty, cannot clone')                
 
         command_clone = '%s clone --depth 1 --branch %s %s %s' % (
             self.binaries['git'], branch, repository, temp_dir
@@ -104,26 +119,29 @@ class Deployer(object):
 
             os.chdir(temp_dir)
             subprocess.check_call(command_checkout.split())
-        except subprocess.CalledProcessError as err:
+        except subprocess.CalledProcessError as e:
+            self.print_fail()
             raise DeployError(
-                "Cloning" if not already_cloned else "Updating" + " repository '%s' failed" % repository
+                ("Cloning " if not already_cloned else "Updating ") + 
+                 "repository '%s' failed" % repository
             ) 
         
         if before_deploy:
             os.chdir(temp_dir)
             for before_cmd in before_deploy:                                                                
-                print '\nRunning ' + before_cmd
+                self.print('\nRunning ' + before_cmd)
+                
                 try:
                     subprocess.check_call(before_cmd.split())
-                except subprocess.CalledProcessError as err:
+                except subprocess.CalledProcessError as e:
                     raise DeployError(
-                        'Received return code %s. Cannot continue.' % err.returncode
+                        'Received return code %s. Cannot continue.' % e.returncode
                     )                                        
 
         for server in servers:
-            print "Deploying '%s' (%s branch) repository to %s (%s)..." % (
+            self.print("Deploying '%s' (%s branch) repository to %s (%s)..." % (
                 repository, branch, server, project_dir
-            )                        
+            ))                        
 
             excludes = self.get_config_value(stage, 'exclude')
         
@@ -150,22 +168,27 @@ class Deployer(object):
                 command_rsync_server_part 
             )
             
-            print 'Sending files...',
+            self.print('Sending files...')
             
             try:
                 subprocess.check_call(command_rsync.split())
-            except subprocess.CalledProcessError as err:
-                raise DeployError('Received return code %s' % err.returncode)                                
+            except subprocess.CalledProcessError as e:
+                raise DeployError('Received return code %s' % e.returncode)                                
             
-            print 'DONE'
-        
-        end = time.time()
+        return True
 
-        print 'Deployment complete (%.3f sec)' % (end - start)
-    
     def get_config_value(self, section, key):
         raw_value = self.config.get(section, key)
         value = raw_value.splitlines() if '\n' in raw_value else raw_value.split(',')
 
         return filter(None, map(str.strip, value))
+    
+    def print(self, text, color=None, end='\n'):
+        print(output(text, color), end=end)
+
+    def print_done(self, text='DONE', end='\n'):
+        return self.print(text, color=colors.GREEN, end=end)
+
+    def print_fail(self, text='FAIL', end='\n'):
+        return self.print(text, color=colors.RED, end=end)
 
