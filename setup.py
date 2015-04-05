@@ -14,7 +14,7 @@ setup(
     version='0.1',
     description='Simple git deployment tool',
     long_description=readme(),
-    url='',
+    url='https://github.com/misterjinx/durant',
     author='Marius Bărbulescu',
     author_email='',
     platforms='linux',
