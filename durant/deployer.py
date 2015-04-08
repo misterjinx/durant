@@ -112,6 +112,8 @@ class Deployer(object):
             self.binaries['git'], branch
         )
 
+        self.print('') # new line
+
         try:
             command_checkout = command_clone
             if already_cloned:
@@ -129,7 +131,7 @@ class Deployer(object):
         if before_deploy:
             os.chdir(temp_dir)
             for before_cmd in before_deploy:                                                                
-                self.print('\nRunning ' + before_cmd)
+                self.print('\nRunning "' + before_cmd + '"...')
                 
                 try:
                     subprocess.check_call(before_cmd.split())
@@ -138,10 +140,14 @@ class Deployer(object):
                         'Received return code %s. Cannot continue.' % e.returncode
                     )                                        
 
+        self.print('') # new line
+
+        self.print("Deploying '%s' (%s branch) repository..." % (
+            repository, branch
+        ))
+
         for server in servers:
-            self.print("Deploying '%s' (%s branch) repository to %s (%s)..." % (
-                repository, branch, server, project_dir
-            ))                        
+            self.print("\nServer %s (%s)..." % (server, project_dir))                        
 
             excludes = self.get_config_value(stage, 'exclude')
         
@@ -169,6 +175,7 @@ class Deployer(object):
             )
             
             self.print('Sending files...')
+            self.print('') # new line
             
             try:
                 subprocess.check_call(command_rsync.split())
