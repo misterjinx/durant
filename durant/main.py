@@ -5,7 +5,6 @@ import time
 import durant
 
 from durant.cli import output
-from durant.cli import output_dots
 from durant.colors import colors
 
 def usage():
@@ -41,19 +40,21 @@ def main():
 
                 d = durant.Deployer()
                 
-                try:
-                    print(output('Starting deployment\n', color=colors.YELLOW))
+                d.print('Starting deployment\n', color=colors.YELLOW)
 
+                try:
                     d.deploy(stage, dry_run)
                     
                     end = time.time()
-                    
-                    print(output('\nDeployment complete (%.3f seconds)' % (end - start), color=colors.YELLOW)) 
+                   
+                    d.print_nl()
+                    d.print('Deployment complete (%.3f seconds)' % (end - start), color=colors.YELLOW) 
                 except Exception as e:
                     end = time.time()
 
-                    print(output('ERROR: ', colors.RED) + str(e))
-                    print(output('\nDeployment failed (%.3f seconds)' % (end - start), color=colors.YELLOW)) 
+                    d.print_error(str(e))
+                    d.print_nl()
+                    d.print('Deployment failed (%.3f seconds)' % (end - start), color=colors.YELLOW) 
                     sys.exit(1)
         else:
             usage()

@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import os
 import sys
+import time
 import subprocess
 from ConfigParser import SafeConfigParser
 
@@ -67,7 +68,7 @@ class Deployer(object):
         if not self.config.has_section(stage):
             self.print_fail()
             raise ConfigError(
-                'Config section for "%s" stage not found' % stage
+                "Config section for '%s' stage not found" % stage
             )
         
         self.print_done()
@@ -112,7 +113,7 @@ class Deployer(object):
             self.binaries['git'], branch
         )
 
-        self.print('') # new line
+        self.print_nl() # new line
 
         try:
             command_checkout = command_clone
@@ -131,7 +132,7 @@ class Deployer(object):
         if before_deploy:
             os.chdir(temp_dir)
             for before_cmd in before_deploy:                                                                
-                self.print('\nRunning "' + before_cmd + '"...')
+                self.print("\nRunning '" + before_cmd + "'...")
                 
                 try:
                     subprocess.check_call(before_cmd.split())
@@ -140,14 +141,14 @@ class Deployer(object):
                         'Received return code %s. Cannot continue.' % e.returncode
                     )                                        
 
-        self.print('') # new line
+        self.print_nl() # new line
 
-        self.print("Deploying '%s' (%s branch) repository..." % (
+        self.print("Deploying '%s' repository (%s branch)..." % (
             repository, branch
         ))
 
         for server in servers:
-            self.print("\nServer %s (%s)..." % (server, project_dir))                        
+            self.print('Server %s (%s)...' % (server, project_dir))                        
 
             excludes = self.get_config_value(stage, 'exclude')
         
@@ -175,7 +176,7 @@ class Deployer(object):
             )
             
             self.print('Sending files...')
-            self.print('') # new line
+            self.print_nl() # new line
             
             try:
                 subprocess.check_call(command_rsync.split())
@@ -190,12 +191,22 @@ class Deployer(object):
 
         return filter(None, map(str.strip, value))
     
-    def print(self, text, color=None, end='\n'):
+    def print(self, text, color=None, prefix=True, end='\n'):
+        if prefix:
+            date = output('['+ time.strftime('%X') +'] ', color=colors.YELLOW)
+            text = date + text
         print(output(text, color), end=end)
 
     def print_done(self, text='DONE', end='\n'):
-        return self.print(text, color=colors.GREEN, end=end)
+        return self.print(text, color=colors.GREEN, prefix=False, end=end)
 
     def print_fail(self, text='FAIL', end='\n'):
-        return self.print(text, color=colors.RED, end=end)
+        return self.print(text, color=colors.RED, prefix=False, end=end)
+    
+    def print_error(self, text, prefix='ERROR: ', end='\n'):
+        err = output(prefix, color=colors.RED)
+        return self.print(err + text)
+
+    def print_nl(self):
+        return self.print('', prefix=False)
 
