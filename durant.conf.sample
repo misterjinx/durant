@@ -4,11 +4,14 @@ temp_dir: /local/directory/where/to/clone/before/deploy
 exclude: .git, .gitignore
 
 [production]
-server: 127.0.0.1, 127.0.0.2
+server: example.com, 127.0.0.1
 user: username
+ssh_port: 1234
+ssh_identity: $HOME/.ssh/identity/or/full/path
 branch: master
-project_dir: /server/project/directory/where/files/reside
+project_dir: /server/project/directory/root
 before_deploy: 
     composer install --no-dev --no-interaction --optimize-autoloader
+    nosetests
     phpunit
     etc.
