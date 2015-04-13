@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """Durant. Simple git deployment tool.
 
 Usage:
@@ -17,4 +16,3 @@ __license__ = 'Apache 2.0'
 __copyright__ = 'Copyright 2015 Marius Bărbulescu'
 
 from deployer import Deployer
-

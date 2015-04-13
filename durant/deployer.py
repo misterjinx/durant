@@ -5,13 +5,12 @@ import sys
 import time
 import subprocess
 
-from cli import output
-from cli import output_dots
-from colors import colors
+from durant.cli import output
+from durant.colors import colors
 
-from exceptions import DependencyError
-from exceptions import ConfigError
-from exceptions import DeployError
+from durant.exceptions import DependencyError
+from durant.exceptions import ConfigError
+from durant.exceptions import DeployError
 
 try:
     import configparser
