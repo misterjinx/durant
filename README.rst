@@ -96,6 +96,17 @@ If you want to test if the deploy process will perform well, without actually de
 
 This will give a view of the files that will be modified. I **highly advice to use this option first** to check if everything will go as expected and not have any surprises. 
 
+Examples
+^^^^^^^^^^^^^^^^^^^^^
+
+A successfully completed deployment may look like this:
+
+.. image:: ./screens/success.gif
+
+In case something turns out wrong, a corresponding error is raised and the process is stopped:
+
+.. image:: ./screens/fail.gif
+
 
 Contribute
 ------------------
