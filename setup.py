@@ -1,22 +1,36 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
+
 def readme():
     with open('README.rst') as f:
         return f.read()
 
+
+def version():
+    version = None
+    with open('durant/__init__.py') as f:
+        version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', 
+            f.read(), re.MULTILINE).group(1)
+    if version:
+        return version
+
+    raise RuntimeError('Package version not defined)
+
 setup(
     name='durant',
-    version='0.1',
+    version=version(),
     description='Simple git deployment tool',
     long_description=readme(),
     url='https://github.com/misterjinx/durant',
     author='Marius Bărbulescu',
-    author_email='',
+    author_email='marius@freshcolors.ro',
     platforms='linux',
     license='Apache 2.0',
     classifiers=[
