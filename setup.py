@@ -16,12 +16,13 @@ def readme():
 def version():
     version = None
     with open('durant/__init__.py') as f:
-        version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', 
-            f.read(), re.MULTILINE).group(1)
+        version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                            f.read(), re.MULTILINE).group(1)
     if version:
         return version
 
-    raise RuntimeError('Package version not defined)
+    raise RuntimeError('Package version not defined')
+
 
 setup(
     name='durant',
@@ -34,8 +35,7 @@ setup(
     platforms='linux',
     license='Apache 2.0',
     classifiers=[
-        'Development Status :: 4 - Beta',
-        'Environment :: Console',
+        'Development Status :: 4 - Beta', 'Environment :: Console',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: Apache Software License',
@@ -47,10 +47,10 @@ setup(
         'Programming Language :: Python :: 3.4'
     ],
     packages=['durant'],
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'durant = durant.main:main'
-        ],
+        ], 
     },
     zip_safe=False
 )
