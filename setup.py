@@ -13,6 +13,11 @@ def readme():
         return f.read()
 
 
+def history():
+    with open('HISTORY.rst') as f:
+        return f.read()
+
+
 def version():
     version = None
     with open('durant/__init__.py') as f:
@@ -28,7 +33,7 @@ setup(
     name='durant',
     version=version(),
     description='Simple git deployment tool',
-    long_description=readme(),
+    long_description=readme() + '\n\n' + history(),
     url='https://github.com/misterjinx/durant',
     author='Marius Bărbulescu',
     author_email='marius@freshcolors.ro',

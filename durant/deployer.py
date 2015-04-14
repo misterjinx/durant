@@ -25,6 +25,8 @@ class Deployer(object):
 
     project_path = None
 
+    default_excludes = ['.git', '.gitignore', '.gitmodules', '.gitkeep']
+    
     commands = ['git', 'rsync']
     binaries = {}
 
@@ -152,9 +154,9 @@ class Deployer(object):
 
             excludes = self.get_config_value(stage, 'exclude', many=True)
 
-            command_rsync_exclude = ''
-            for exclude in excludes:
-                command_rsync_exclude += ' --exclude ' + exclude
+            command_rsync_exclude = []
+            for exclude in set(self.default_excludes).union(excludes):
+                command_rsync_exclude.append('--exclude %s' % exclude)
 
             if temp_dir[-1] != os.sep:
                 temp_dir += os.sep
@@ -188,12 +190,12 @@ class Deployer(object):
             command_rsync.append('-avzuh')
             if dry_run:
                 command_rsync.append('--dry-run')
-            command_rsync.extend(command_rsync_exclude.strip().split())
+            command_rsync.extend(command_rsync_exclude)
             command_rsync.append('-e')
             command_rsync.append(command_rsync_ssh_part)
             command_rsync.append(temp_dir)
             command_rsync.append(command_rsync_server_part)
-
+            
             self.print('Sending files...')
             self.print_nl()  # new line
 
