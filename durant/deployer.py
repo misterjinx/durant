@@ -156,7 +156,8 @@ class Deployer(object):
 
             command_rsync_exclude = []
             for exclude in set(self.default_excludes).union(excludes):
-                command_rsync_exclude.append('--exclude %s' % exclude)
+                command_rsync_exclude.append('--exclude')
+                command_rsync_exclude.append(exclude)
 
             if temp_dir[-1] != os.sep:
                 temp_dir += os.sep

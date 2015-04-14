@@ -33,7 +33,7 @@ setup(
     name='durant',
     version=version(),
     description='Simple git deployment tool',
-    long_description=readme() + '\n\n' + history(),
+    long_description=readme() + history(),
     url='https://github.com/misterjinx/durant',
     author='Marius Bărbulescu',
     author_email='marius@freshcolors.ro',

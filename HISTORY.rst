@@ -3,6 +3,13 @@
 Release History
 ------------------
 
+0.2.1 (2015-04-14)
+++++++++++++++++++
+
+**Bugfixes**
+
+* Fix rsync exclude command build error
+
 0.2.0 (2015-04-14)
 ++++++++++++++++++
 

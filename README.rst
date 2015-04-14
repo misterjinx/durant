@@ -10,7 +10,7 @@ Durant is a simple deployment tool for git repositories. It sends the files to s
 Latest version
 ------------------
 
-Durant is a work in progress, currently in beta phase. Latest available version is 0.2.0.
+Durant is a work in progress, currently in beta phase. Latest available version is 0.2.1.
 
 
 Requirements
