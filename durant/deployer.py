@@ -189,6 +189,7 @@ class Deployer(object):
             command_rsync = []
             command_rsync.append(self.binaries['rsync'])
             command_rsync.append('-avzuh')
+            command_rsync.append('--itemize-changes')
             if dry_run:
                 command_rsync.append('--dry-run')
             command_rsync.extend(command_rsync_exclude)
