@@ -3,6 +3,11 @@
 Release History
 ------------------
 
+0.2.2 (2015-04-19)
+^^^^^^^^^^^^^^^^^^
+
+* Switch to argparse module for command line interface
+
 0.2.1 (2015-04-14)
 ^^^^^^^^^^^^^^^^^^
 
