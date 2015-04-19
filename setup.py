@@ -52,6 +52,9 @@ setup(
         'Programming Language :: Python :: 3.4'
     ],
     packages=['durant'],
+    install_requires=[
+        'argparse',
+    ],
     entry_points={
         'console_scripts': [
             'durant = durant.main:main'

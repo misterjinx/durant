@@ -2,68 +2,52 @@ from __future__ import print_function
 
 import sys
 import time
+import argparse
 import durant
 
 from durant.cli import output
 from durant.colors import colors
 
 
-def usage():
-    print(durant.__doc__)
-
-
 def version():
-    print('Version %s' % durant.__version__)
+    return 'Version %s' % durant.__version__
 
 
 def main():
-    try:
-        sys.argv[1]
-    except IndexError:
-        usage()
-        sys.exit(1)
-    else:
-        args = sys.argv[1:]
-        if '-h' in args or '--help' in args:
-            usage()
-            sys.exit(1)
-        elif '-v' in args or '--version' in args:
-            version()
-            sys.exit(1)
-        elif 'deploy' in args:
-            dry_run = True if '-n' in args or '--dry-run' in args else False
+    parser = argparse.ArgumentParser(description='Durant. Simple git deployment tool.',
+        epilog="Use '%(prog)s <command> --help' to get detailed usage for that particular command")
+    parser.add_argument('-v', '--version', action='version', version=version())
 
-            try:
-                stage = args[args.index('deploy') + 1]
-            except IndexError:
-                usage()
-                sys.exit(1)
-            else:
-                start = time.time()
+    subparsers = parser.add_subparsers(dest='command', title='available commands')
 
-                d = durant.Deployer()
+    deploy_parser = subparsers.add_parser('deploy', help='Deploy to specified stage')
+    deploy_parser.add_argument('-n', '--dry-run', action='store_true', default=False,
+        help='Perform a trial run, without actually deploying')
+    deploy_parser.add_argument('stage', action='store',
+        help='Stage to deploy to (a valid section name defined in the config file)')
 
-                d.print('Starting deployment\n', color=colors.YELLOW)
+    args = parser.parse_args()
 
-                try:
-                    d.deploy(stage, dry_run)
+    if args.command == 'deploy':
+        start = time.time()
 
-                    end = time.time()
+        d = durant.Deployer()
+        d.print('Starting deployment\n')
 
-                    d.print_nl()
-                    d.print('Deployment complete (%.3f seconds)' %
-                            (end - start),
-                            color=colors.YELLOW)
-                except Exception as e:
-                    end = time.time()
+        try:
+            d.deploy(args.stage, args.dry_run)
+            deployed = True
+        except Exception as e:
+            d.print_error(str(e))
+            deployed = False
 
-                    d.print_error(str(e))
-                    d.print_nl()
-                    d.print('Deployment failed (%.3f seconds)' % (end - start),
-                            color=colors.YELLOW)
-                    sys.exit(1)
-        else:
-            usage()
+        end = time.time()
+
+        d.print_nl()
+        d.print('Deployment %s (%.3f seconds)' %
+                ('complete' if deployed else 'failed', (end - start)))
+
+        if not deployed:
             sys.exit(1)
 
 

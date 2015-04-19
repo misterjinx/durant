@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 """Durant. Simple git deployment tool.
 
-Usage:
-durant [OPTIONS] deploy <stage>
+Usage examples:
+* Deploy project to stage    
+    durant deploy [-n] <stage>
 
-Options:
--n, --dry-run   Perform a trial run, without actually deploying
--v, --version   Show version number
--h, --help      Show this screen"""
+Please run 'durant --help' to see full help"""
 
 __title__ = 'durant'
 __version__ = '0.2.1'
