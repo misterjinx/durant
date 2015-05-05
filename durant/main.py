@@ -6,6 +6,7 @@ import argparse
 import durant
 
 from durant.cli import output
+from durant.cli import console
 from durant.colors import colors
 
 
@@ -27,25 +28,34 @@ def main():
         help='Stage to deploy to (a valid section name defined in the config file)')
 
     args = parser.parse_args()
-
+    
     if args.command == 'deploy':
-        start = time.time()
-
-        d = durant.Deployer()
-        d.print('Starting deployment\n')
+        console.log('Starting deployment\n')
 
         try:
-            d.deploy(args.stage, args.dry_run)
+            console.log('Checking config file...', end='')
+            config = durant.Config()
+            console.done()
+        except Exception as e:
+            console.fail()
+            sys.exit(1)
+
+        start = time.time()    
+
+        try:            
+            cmd = durant.commands.Deploy(config)        
+            cmd.execute(stage=args.stage, dry_run=args.dry_run)
+
             deployed = True
         except Exception as e:
-            d.print_error(str(e))
+            console.error(str(e))
             deployed = False
 
         end = time.time()
 
-        d.print_nl()
-        d.print('Deployment %s (%.3f seconds)' %
-                ('complete' if deployed else 'failed', (end - start)))
+        console.nl()
+        console.log('Deployment %s (%.3f seconds)' %
+            ('complete' if deployed else 'failed', (end - start)))
 
         if not deployed:
             sys.exit(1)

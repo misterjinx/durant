@@ -13,4 +13,7 @@ __author__ = 'Marius Bărbulescu'
 __license__ = 'Apache 2.0'
 __copyright__ = 'Copyright 2015 Marius Bărbulescu'
 
-from deployer import Deployer
+import commands
+
+from .config import Config
+from .deployer import Deployer
