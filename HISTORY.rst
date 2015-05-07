@@ -3,6 +3,15 @@
 Release History
 ------------------
 
+0.2.3 (2015-05-07)
+^^^^^^^^^^^^^^^^^^
+
+* Add the possibility to specify the remote to use (default is origin)
+* Internal changes:
+    - Refactor code to use separated commands
+    - Add console class to better handle console output
+    - Add config class to handle config options
+
 0.2.2 (2015-04-19)
 ^^^^^^^^^^^^^^^^^^
 

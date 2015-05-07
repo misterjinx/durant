@@ -10,7 +10,7 @@ Durant is a simple deployment tool for git repositories. It sends the files to s
 Latest version
 ------------------
 
-Durant is a work in progress, currently in beta phase. Latest available version is 0.2.2.
+Durant is a work in progress, currently in beta phase. Latest available version is 0.2.3.
 
 
 Requirements
@@ -86,13 +86,13 @@ After everything is setup you can start using the command line tool. As you may 
 
 .. code-block:: bash
 
-    $ durant [OPTIONS] deploy <stage>
+    $ durant deploy [OPTIONS] <stage>
 
 If you want to test if the deploy process will perform well, without actually deploying to servers, you can specify the ``-n`` option in order to do a trial run.
 
 .. code-block:: bash
 
-    $ durant -n deploy <stage>
+    $ durant deploy -n <stage>
 
 This will give a view of the files that will be modified. I **highly advice to use this option first** to check if everything will go as expected and not have any surprises. 
 

@@ -8,7 +8,7 @@ Usage examples:
 Please run 'durant --help' to see full help"""
 
 __title__ = 'durant'
-__version__ = '0.2.2'
+__version__ = '0.2.3'
 __author__ = 'Marius Bărbulescu'
 __license__ = 'Apache 2.0'
 __copyright__ = 'Copyright 2015 Marius Bărbulescu'
