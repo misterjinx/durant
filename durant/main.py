@@ -7,7 +7,6 @@ import durant
 
 from durant.cli import output
 from durant.cli import console
-from durant.colors import colors
 
 
 def version():

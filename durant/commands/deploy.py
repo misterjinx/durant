@@ -50,7 +50,8 @@ class Deploy(Command):
 
         temp_dir = self.config.get(stage, 'temp_dir')
         repository = self.config.get(stage, 'repository')
-        branch = self.config.get(stage, 'branch')
+        remote = self.config.get(stage, 'remote', fallback='origin')
+        branch = self.config.get(stage, 'branch', fallback='master')
         project_dir = self.config.get(stage, 'project_dir')
 
         already_cloned = False
@@ -74,10 +75,10 @@ class Deploy(Command):
                 console.fail()
                 raise DeployError('Temp directory is not empty, cannot clone')
 
-        command_clone = '%s clone --depth 1 --branch %s %s %s' % (
-            self.binaries['git'], branch, repository, temp_dir
+        command_clone = '%s clone --depth 1 --origin %s --branch %s %s %s' % (
+            self.binaries['git'], remote, branch, repository, temp_dir
         )
-        command_pull = '%s pull origin %s' % (self.binaries['git'], branch)
+        command_pull = '%s pull %s %s' % (self.binaries['git'], remote, branch)
 
         console.nl()  # new line
 

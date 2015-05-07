@@ -8,6 +8,7 @@ server: example.com, 127.0.0.1
 user: username
 ssh_port: 1234
 ssh_identity: $HOME/.ssh/identity/or/full/path
+remote: origin
 branch: master
 project_dir: /server/project/directory/root
 before_deploy: 
